@@ -1,0 +1,53 @@
+{
+  "name": "@smplcty/dev-backend",
+  "version": "0.1.0",
+  "description": "Local Lambda dev server — reads a routes config, loads .env, serves Lambda handlers over HTTP with API Gateway v2 event translation.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "dev-backend": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mabulu-inc/dev-backend.git"
+  },
+  "homepage": "https://github.com/mabulu-inc/dev-backend#readme",
+  "bugs": {
+    "url": "https://github.com/mabulu-inc/dev-backend/issues"
+  },
+  "keywords": [
+    "lambda",
+    "dev-server",
+    "api-gateway",
+    "local"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.5.2",
+    "eslint": "^10.2.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1",
+    "vitest": "^4.1.4"
+  }
+}
