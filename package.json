@@ -1,15 +1,16 @@
 {
   "name": "@smplcty/dev-backend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local Lambda dev server — reads a routes config, loads .env, serves Lambda handlers over HTTP with API Gateway v2 event translation.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "dev-backend": "./dist/cli.js"
+    "dev-backend": "dist/cli.js"
   },
   "files": [
     "dist",
+    "!dist/**/*.test.*",
     "README.md",
     "LICENSE"
   ],
