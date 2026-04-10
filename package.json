@@ -20,11 +20,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mabulu-inc/dev-backend.git"
+    "url": "git+https://github.com/mabulu-inc/simplicity-dev-backend.git"
   },
-  "homepage": "https://github.com/mabulu-inc/dev-backend#readme",
+  "homepage": "https://github.com/mabulu-inc/simplicity-dev-backend#readme",
   "bugs": {
-    "url": "https://github.com/mabulu-inc/dev-backend/issues"
+    "url": "https://github.com/mabulu-inc/simplicity-dev-backend/issues"
   },
   "keywords": [
     "lambda",
