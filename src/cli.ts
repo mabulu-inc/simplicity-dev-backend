@@ -5,7 +5,7 @@ import { loadEnvFile } from './env.js';
 import { loadHandlers } from './handlers.js';
 import { startServer } from './server.js';
 
-const configPath = process.argv[2] ?? 'back-end.routes.json';
+const configPath = process.argv[2] ?? 'backend.routes.json';
 
 console.log(`Loading config from ${configPath}`);
 const config = loadConfig(configPath);

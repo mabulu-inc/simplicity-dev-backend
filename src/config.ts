@@ -61,7 +61,7 @@ export function loadConfig(configPath: string): Config {
 
   return {
     port: raw.port ?? 4000,
-    envFile: resolve(dir, raw.envFile ?? '.env.back-end'),
+    envFile: resolve(dir, raw.envFile ?? '.env.backend'),
     routes,
   };
 }

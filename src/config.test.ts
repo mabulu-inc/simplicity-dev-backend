@@ -18,7 +18,7 @@ describe('loadConfig', () => {
     const config = loadConfig(configPath);
 
     expect(config.port).toBe(4000);
-    expect(config.envFile).toBe(join(dir, '.env.back-end'));
+    expect(config.envFile).toBe(join(dir, '.env.backend'));
     expect(config.routes['/graphql']?.handler).toBe(join(dir, 'handler.js'));
     expect(config.routes['/graphql']?.envFile).toBeUndefined();
 

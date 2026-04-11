@@ -22,17 +22,17 @@ pnpm add -D @smplcty/dev-backend
 dev-backend [config-path]
 ```
 
-Default config path is `back-end.routes.json` in the current
+Default config path is `backend.routes.json` in the current
 directory.
 
 ## Config
 
-`back-end.routes.json` — committed to your frontend repo:
+`backend.routes.json` — committed to your frontend repo:
 
 ```json
 {
   "port": 4000,
-  "envFile": ".env.back-end",
+  "envFile": ".env.backend",
   "routes": {
     "/graphql": "../handle-graphql/dist/index.js",
     "/sign-in": {
@@ -74,7 +74,7 @@ All paths are resolved relative to the config file's location.
 
 ### Env files
 
-`.env.back-end` — shared variables (gitignored):
+`.env.backend` — shared variables (gitignored):
 
 ```
 DATABASE_URL=postgresql://...
