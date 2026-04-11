@@ -1,12 +1,12 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { buildEvent, decompressResponse } from './event.js';
-import type { Handler } from './handlers.js';
+import type { LoadedRoute } from './handlers.js';
 
 /**
  * Start the HTTP server that routes requests to Lambda handlers.
  */
 export function startServer(
-  handlers: Record<string, Handler>,
+  routes: Record<string, LoadedRoute>,
   port: number,
 ): void {
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
@@ -23,8 +23,8 @@ export function startServer(
       return;
     }
 
-    const handler = handlers[rawPath];
-    if (!handler) {
+    const route = routes[rawPath];
+    if (!route) {
       setCorsHeaders(res);
       res.statusCode = 404;
       res.setHeader('Content-Type', 'application/json');
@@ -34,13 +34,33 @@ export function startServer(
 
     try {
       const event = await buildEvent(req, rawPath, query);
-      const response = await handler(event);
+
+      // Run authorizer if configured
+      if (route.authorizer) {
+        const { isAuthorized } = await route.authorizer(event);
+        if (!isAuthorized) {
+          setCorsHeaders(res);
+          res.statusCode = 403;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ message: 'Forbidden' }));
+          return;
+        }
+      }
+
+      const response = await route.handler(event);
 
       setCorsHeaders(res);
       res.statusCode = response.statusCode;
       res.setHeader('Content-Type', 'application/json');
 
       let body = response.body ?? '';
+
+      // Auto-stringify object bodies — some handlers return body as
+      // an object expecting API Gateway to serialize it.
+      if (typeof body !== 'string') {
+        body = JSON.stringify(body);
+      }
+
       if (response.headers?.['Content-Encoding'] === 'gzip') {
         body = decompressResponse(body);
       }

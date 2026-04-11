@@ -8,6 +8,10 @@ export interface RouteConfig {
    *  Overrides values from the base envFile. Useful when handlers
    *  need different DATABASE_URL values. */
   envFile?: string;
+  /** Optional authorizer module path. If set, the authorizer is
+   *  called before the handler on every request. If it returns
+   *  `{ isAuthorized: false }`, the request is rejected with 403. */
+  authorizer?: string;
 }
 
 export interface Config {
@@ -19,7 +23,7 @@ export interface Config {
   routes: Record<string, RouteConfig>;
 }
 
-type RawRouteEntry = string | { handler: string; envFile?: string };
+type RawRouteEntry = string | { handler: string; envFile?: string; authorizer?: string };
 
 interface RawConfig {
   port?: number;
@@ -55,6 +59,7 @@ export function loadConfig(configPath: string): Config {
       routes[path] = {
         handler: resolve(dir, entry.handler),
         envFile: entry.envFile ? resolve(dir, entry.envFile) : undefined,
+        authorizer: entry.authorizer ? resolve(dir, entry.authorizer) : undefined,
       };
     }
   }

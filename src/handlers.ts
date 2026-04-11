@@ -5,22 +5,30 @@ import type { RouteConfig } from './config.js';
 
 export type Handler = (event: Record<string, unknown>) => Promise<{
   statusCode: number;
-  body?: string;
+  body?: string | Record<string, unknown>;
   headers?: Record<string, string>;
 }>;
 
+export type Authorizer = (event: Record<string, unknown>) => Promise<{
+  isAuthorized: boolean;
+}>;
+
+export interface LoadedRoute {
+  handler: Handler;
+  authorizer?: Authorizer;
+}
+
 /**
- * Import all handler modules. For routes with a per-route envFile,
- * temporarily override process.env before importing so the handler's
- * module-level init (e.g. Pool creation) picks up the right values.
+ * Import all handler modules (and optional authorizers). For routes
+ * with a per-route envFile, temporarily override process.env before
+ * importing so the handler's module-level init picks up the right values.
  */
 export async function loadHandlers(
   routes: Record<string, RouteConfig>,
-): Promise<Record<string, Handler>> {
-  const handlers: Record<string, Handler> = {};
+): Promise<Record<string, LoadedRoute>> {
+  const loaded: Record<string, LoadedRoute> = {};
 
   for (const [path, route] of Object.entries(routes)) {
-    // Snapshot env vars that the route's envFile might override
     const overrides = new Map<string, string | undefined>();
 
     if (route.envFile) {
@@ -44,8 +52,24 @@ export async function loadHandlers(
         );
         continue;
       }
-      handlers[path] = handler;
-      console.log(`  ${path} → ${route.handler}`);
+
+      let authorizer: Authorizer | undefined;
+      if (route.authorizer) {
+        const authMod = (await import(
+          pathToFileURL(route.authorizer).href
+        )) as Record<string, unknown>;
+        authorizer = authMod.handler as Authorizer | undefined;
+        if (typeof authorizer !== 'function') {
+          console.error(
+            `  ${path}: ${route.authorizer} does not export a handler function — skipping authorizer`,
+          );
+          authorizer = undefined;
+        }
+      }
+
+      loaded[path] = { handler, authorizer };
+      const suffix = authorizer ? ' (with authorizer)' : '';
+      console.log(`  ${path} → ${route.handler}${suffix}`);
     } catch (err) {
       console.error(`  ${path}: failed to import ${route.handler}:`, err);
       continue;
@@ -60,7 +84,7 @@ export async function loadHandlers(
     }
   }
 
-  return handlers;
+  return loaded;
 }
 
 /**
