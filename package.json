@@ -42,7 +42,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "release": "release-it"
+    "release": "GITHUB_TOKEN=$(gh auth token) release-it --ci"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
