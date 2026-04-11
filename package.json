@@ -1,6 +1,6 @@
 {
   "name": "@smplcty/dev-backend",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Local Lambda dev server — reads a routes config, loads .env, serves Lambda handlers over HTTP with API Gateway v2 event translation.",
   "license": "MIT",
   "type": "module",
